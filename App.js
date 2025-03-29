@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './components/HomeScreen';
-
+import DeckPage from './components/DeckPage';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -11,6 +11,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Decks" component={HomeScreen} />
+        <Stack.Screen name="Deck" component={DeckPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
