@@ -4,18 +4,21 @@ import { View, Text, FlatList, TouchableOpacity, TextInput, Modal } from 'react-
 import { Button } from 'react-native-paper';
 import styles from './styles';
 
+//HomeScreen component to display user's decks and to add new ones
 export default function HomeScreen({ navigation }) {
+    //States
     const [decks, setDecks] = useState([]);
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false); // state to control modal visibility
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
-    const db = SQLite.openDatabaseSync('coursedb');
+    const db = SQLite.openDatabaseSync('coursedb'); //Open SQlite database
 
     useEffect(() => {
         initialize();
     }, []);
 
+    //Function to initialize the database ( creates table "deck" )
     const initialize = async () => {
         try {
             await db.execAsync(`
@@ -25,54 +28,59 @@ export default function HomeScreen({ navigation }) {
                     title TEXT
                 );
             `);
-            updateList();
+            updateList(); // updates the list of decks
         } catch (error) {
             console.error('Could not open database', error);
         }
     };
 
+    // Function to save a new deck into the database
     const saveItem = async () => {
         try {
             await db.runAsync('INSERT INTO deck (title, description) VALUES (?, ?)', title, description);
             setTitle('');
             setDescription('');
-            setShowModal(false); 
-            updateList();
+            setShowModal(false); //closes the modal
+            updateList(); //updates the list of decks
         } catch (error) {
             console.error('Could not add item', error);
         }
     };
 
+    // Function to fetch decks from the database and update the state
     const updateList = async () => {
         try {
-            const list = await db.getAllAsync('SELECT * FROM deck');
-            setDecks(list);
+            const list = await db.getAllAsync('SELECT * FROM deck'); // fetches the decks
+            setDecks(list); // sets the updated decks
         } catch (error) {
             console.error('Could not get items', error);
         }
     };
 
+    // Function to delete a deck from the database
     const deleteItem = async (id) => {
         try {
-            await db.runAsync('DELETE FROM deck WHERE id=?', id);
+            await db.runAsync('DELETE FROM deck WHERE id=?', id); //deletes the deck based on the id
             await updateList();
         } catch (error) {
             console.error('Could not delete item', error);
         }
     };
 
+
     return (
         <View style={styles.container}>
+            {/* Button to open the modal for adding a new deck */}
             <Button mode="contained" style={styles.button} onPress={() => setShowModal(true)}>
                 Add Deck
             </Button>
 
-            {/* Modal Window */}
+            {/* Modal for creating a new deck */}
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={showModal}
-                onRequestClose={() => setShowModal(false)} 
+                onRequestClose={() => setShowModal(false)}
             >
                 <View style={styles.modalBackground}>
                     <View style={styles.modalContainer}>
@@ -98,7 +106,7 @@ export default function HomeScreen({ navigation }) {
                 </View>
             </Modal>
 
-            {/* List of decks */}
+            {/* List of all decks */}
             <FlatList
                 keyExtractor={(item) => item.id.toString()}
                 data={decks}
