@@ -46,12 +46,18 @@ export default function HomeScreen({ navigation }) {
     // Function to delete a deck from the database
     const deleteItem = async (id) => {
         try {
-            await db.runAsync('DELETE FROM deck WHERE id=?', id); //deletes the deck based on the id
-            await updateList();
+          // First, delete all cards associated with this deck
+          await db.runAsync('DELETE FROM card WHERE deck_id = ?', id);
+      
+          // Then, delete the deck itself
+          await db.runAsync('DELETE FROM deck WHERE id = ?', id);
+      
+          // Update the deck list to reflect the deletion
+          await updateList();
         } catch (error) {
-            console.error('Could not delete item', error);
+          console.error('Could not delete item', error);
         }
-    };
+      };
 
 
     return (
