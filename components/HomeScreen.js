@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as SQLite from 'expo-sqlite';
+import { useSQLiteContext } from 'expo-sqlite';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Button } from 'react-native-paper';
 import styles from './styles';
@@ -7,32 +8,27 @@ import styles from './styles';
 //HomeScreen component to display user's decks and to add new ones
 export default function HomeScreen({ navigation }) {
     //States
+    const db = useSQLiteContext(); 
     const [decks, setDecks] = useState([]);
     const [showModal, setShowModal] = useState(false); // state to control modal visibility
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
-    const db = SQLite.openDatabaseSync('coursedb'); //Open SQlite database
-
     useEffect(() => {
-        initialize();
+        updateList();
     }, []);
 
-    //Function to initialize the database ( creates table "deck" )
-    const initialize = async () => {
+    
+    // Function to fetch decks from the database and update the state
+    const updateList = async () => {
         try {
-            await db.execAsync(`
-                CREATE TABLE IF NOT EXISTS deck (
-                    id INTEGER PRIMARY KEY NOT NULL,
-                    description TEXT, 
-                    title TEXT
-                );
-            `);
-            updateList(); // updates the list of decks
+            const list = await db.getAllAsync('SELECT * FROM deck'); // fetches the decks
+            setDecks(list); // sets the updated decks
         } catch (error) {
-            console.error('Could not open database', error);
+            console.error('Could not get items', error);
         }
     };
+
 
     // Function to save a new deck into the database
     const saveItem = async () => {
@@ -44,16 +40,6 @@ export default function HomeScreen({ navigation }) {
             updateList(); //updates the list of decks
         } catch (error) {
             console.error('Could not add item', error);
-        }
-    };
-
-    // Function to fetch decks from the database and update the state
-    const updateList = async () => {
-        try {
-            const list = await db.getAllAsync('SELECT * FROM deck'); // fetches the decks
-            setDecks(list); // sets the updated decks
-        } catch (error) {
-            console.error('Could not get items', error);
         }
     };
 
@@ -113,10 +99,11 @@ export default function HomeScreen({ navigation }) {
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         style={styles.deck}
-                        onPress={() => navigation.navigate('Deck', { deck: item })}
+                        onPress={() => navigation.navigate('DeckPage', { deck: item })}
                     >
                         <Text style={styles.deckTitle} numberOfLines={1}>{item.title}</Text>
                         <Text style={styles.deckDescription} numberOfLines={3}>{item.description}</Text>
+                        <Text style={{ color: '#ff0000' }} onPress={() => deleteItem(item.id)}>Done</Text>
                     </TouchableOpacity>
                 )}
             />
