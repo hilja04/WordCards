@@ -46,6 +46,11 @@ export default function DeckPage({ route }) {
             console.error('Could not delete item', error);
         }
     };
+    const toggleCard = (index) => {
+        const updatedCards = [...cards];
+        updatedCards[index].showAnswer = !updatedCards[index].showAnswer;
+        setCards(updatedCards);
+    };
 
 
     return (
@@ -62,15 +67,16 @@ export default function DeckPage({ route }) {
             >
                 <View style={styles.modalBackground}>
                     <View style={styles.modalContainer}>
+                        <Text style={styles.text}>Write a word and its translation or explanation: </Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Question"
+                            placeholder="Word 1"
                             value={question}
                             onChangeText={setQuestion}
                         />
                         <TextInput
                             style={styles.input}
-                            placeholder="Answer"
+                            placeholder="Word 2"
                             value={answer}
                             onChangeText={setAnswer}
                         />
@@ -91,12 +97,15 @@ export default function DeckPage({ route }) {
             <FlatList
                 data={cards}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <Text style={styles.cardQuestion}>{item.question}</Text>
-                        <Text style={styles.cardAnswer}>{item.answer}</Text>
-                         <Text style={{ color: '#ff0000' }} onPress={() => deleteItem(item.id)}>Done</Text>
-                    </View>
+                renderItem={({ item, index }) => (
+                    <TouchableOpacity onPress={() => toggleCard(index)} style={styles.card}>
+                        <Text style={styles.cardQuestion}>
+                            {item.showAnswer ? item.answer : item.question}
+                        </Text>
+                        <Text style={{ color: '#ff0000' }} onPress={() => deleteItem(item.id)}>
+                            Done
+                        </Text>
+                    </TouchableOpacity>
                 )}
             />
         </View>

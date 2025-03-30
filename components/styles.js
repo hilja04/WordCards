@@ -20,6 +20,8 @@ const styles = StyleSheet.create({
     text:{
         margin:10,
         fontSize: 14,
+        textAlign:'center'
+
     },
     button: {
         backgroundColor: "#FF66CC",
@@ -32,6 +34,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
     },
+
     deck: {
         backgroundColor: '#E0B8FF',
         padding: 15,
@@ -52,40 +55,39 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 5,
+        textAlign:'center',
         overflow: 'hidden',
     },
     deckDescription: {
         fontSize: 14,
         color: '#555',
         marginBottom: 10,
+        textAlign:'center',
         overflow: 'hidden',
     },
     card: {
+        width: 300,
+        height: 150,
         backgroundColor: '#E0B8FF',
-        padding: 15,
-        margin:10,
-        width:270,
-        height:150,
-        marginBottom: 15,
         borderRadius: 15,
-        borderColor: '#E0B8FF',
+        marginBottom: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
         shadowColor: '#000000',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.7,
         shadowRadius: 15,
         elevation: 10,
-        justifyContent: 'flex-start',
         overflow: 'hidden',
-        
-
     },
     cardQuestion: {
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 5,
+        textAlign: 'center',
     },
     cardAnswer: {
-        fontSize: 14,
+        fontSize: 16,
+        textAlign: 'center',
         color: '#555',
     },
 
@@ -106,7 +108,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5,
+        flexDirection: 'column',
     },
+    
     
 });
 
