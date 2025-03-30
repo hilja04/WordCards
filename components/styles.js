@@ -17,6 +17,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 10,
     },
+    text:{
+        margin:10,
+        fontSize: 14,
+    },
     button: {
         backgroundColor: "#FF66CC",
         marginTop: 5,
@@ -56,6 +60,34 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         overflow: 'hidden',
     },
+    card: {
+        backgroundColor: '#E0B8FF',
+        padding: 15,
+        margin:10,
+        width:270,
+        height:150,
+        marginBottom: 15,
+        borderRadius: 15,
+        borderColor: '#E0B8FF',
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.7,
+        shadowRadius: 15,
+        elevation: 10,
+        justifyContent: 'flex-start',
+        overflow: 'hidden',
+        
+
+    },
+    cardQuestion: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    cardAnswer: {
+        fontSize: 14,
+        color: '#555',
+    },
 
     modalBackground: {
         flex: 1,
@@ -75,6 +107,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    
 });
 
 export default styles;

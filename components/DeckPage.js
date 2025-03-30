@@ -1,14 +1,104 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Modal } from 'react-native';
+import { Button } from 'react-native-paper';
+import { useSQLiteContext } from 'expo-sqlite';
 import styles from './styles';
 
 export default function DeckPage({ route }) {
     const { deck } = route.params; // Vastaanota deck tiedot
+    const db = useSQLiteContext();
+    const [cards, setCards] = useState([]);
+    const [question, setQuestion] = useState('');
+    const [answer, setAnswer] = useState('');
+    const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+        fetchCards();
+    }, []);
+
+    const fetchCards = async () => {
+        try {
+            const list = await db.getAllAsync('SELECT * FROM card WHERE deck_id = ?', deck.id);
+            setCards(list);
+        } catch (error) {
+            console.error('Could not fetch cards', error);
+        }
+    };
+
+    const addCard = async () => {
+        try {
+            await db.runAsync('INSERT INTO card (deck_id, question, answer) VALUES (?, ?, ?)', deck.id, question, answer);
+            setQuestion('');
+            setAnswer('');
+            setShowModal(false);
+            fetchCards();
+        } catch (error) {
+            console.error('Could not add card', error);
+        }
+    };
+
+    const deleteItem = async (id) => {
+        try {
+            await db.runAsync('DELETE FROM card WHERE id=?', id); 
+            await fetchCards();
+        } catch (error) {
+            console.error('Could not delete item', error);
+        }
+    };
+
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{deck.title}</Text>
-            <Text style={styles.description}>{deck.description}</Text>
+            <Text style={styles.text}>{deck.description}</Text>
+            <Button mode="contained" style={styles.button} onPress={() => setShowModal(true)}>
+                Add Card
+            </Button>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showModal}
+                onRequestClose={() => setShowModal(false)}
+            >
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Question"
+                            value={question}
+                            onChangeText={setQuestion}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Answer"
+                            value={answer}
+                            onChangeText={setAnswer}
+                        />
+                        <Button mode="contained" style={styles.button} onPress={addCard}>
+                            Save Card
+                        </Button>
+                        <Button
+                            mode="outlined"
+                            style={styles.cancelButton}
+                            onPress={() => setShowModal(false)}
+                        >
+                            Cancel
+                        </Button>
+                    </View>
+                </View>
+            </Modal>
+
+            <FlatList
+                data={cards}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View style={styles.card}>
+                        <Text style={styles.cardQuestion}>{item.question}</Text>
+                        <Text style={styles.cardAnswer}>{item.answer}</Text>
+                         <Text style={{ color: '#ff0000' }} onPress={() => deleteItem(item.id)}>Done</Text>
+                    </View>
+                )}
+            />
         </View>
     );
 }
