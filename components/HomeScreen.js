@@ -103,7 +103,7 @@ export default function HomeScreen({ navigation }) {
                 keyExtractor={(item) => item.id.toString()}
                 data={decks}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.deck} onPress={() => navigation.navigate('DeckPage', { deck: item })}>
+                    <TouchableOpacity style={styles.deck} onPress={() => navigation.navigate('DeckDetails', { deck: item })}>
                         <Text style={styles.deckTitle} numberOfLines={1}>{item.title}</Text>
                         <Text style={styles.deckDescription} numberOfLines={3}>{item.description}</Text>
                         <Text style={{ color: '#ff0000' }} onPress={() => deleteItem(item.id)}>

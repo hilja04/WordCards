@@ -1,11 +1,58 @@
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SQLiteProvider } from 'expo-sqlite';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import HomeScreen from './components/HomeScreen';
-import DeckPage from './components/DeckPage';
-const Stack = createStackNavigator();
+import DeckScreen from './components/DeckScreen';
+import SearchScreen from './components/SearchScreen';
 
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+// Stack navigation for Decks tab
+function HomeStackNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="DecksList" component={HomeScreen} options={{ title: 'Decks' }} />
+      <Stack.Screen 
+        name="DeckDetails" 
+        component={DeckScreen} 
+        options={({ route }) => ({ title: route.params.deck.title })} 
+      />
+    </Stack.Navigator>
+  );
+}
+
+// Bottom tab navigation with Home stack and Search screen
+function TabNavigator() {
+  return (
+    <Tab.Navigator
+      // Tab icons
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Decks') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Search') {
+            iconName = focused ? 'search' : 'search-outline';
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      {/* Tab Screens */}
+      <Tab.Screen name="Decks" component={HomeStackNavigator} options={{ headerShown: false }} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+    </Tab.Navigator>
+  );
+}
+
+// Initializer for the database
 const initializeDatabase = async (db) => {
   try {
     // Create Deck table
@@ -32,24 +79,17 @@ const initializeDatabase = async (db) => {
   }
 };
 
+// App component with SQLiteProvider and Navigation setup
 export default function App() {
   return (
     <SQLiteProvider
-    databaseName="deckdb.db"
-    onInit={initializeDatabase}
-    onError={(error) => console.error('Database error:', error)}
-  >
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Decks" component={HomeScreen} />
-        <Stack.Screen 
-          name="DeckPage" 
-          component={DeckPage} 
-          options={({ route }) => ({ title: route.params.deck.title })} 
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  </SQLiteProvider>
+      databaseName="deckdb.db"
+      onInit={initializeDatabase}
+      onError={(error) => console.error('Database error:', error)}
+    >
+      <NavigationContainer>
+        <TabNavigator />
+      </NavigationContainer>
+    </SQLiteProvider>
   );
 }
-

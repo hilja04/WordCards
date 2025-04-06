@@ -23,6 +23,12 @@ const styles = StyleSheet.create({
         textAlign:'center'
 
     },
+    errorText:{
+        margin:10,
+        fontSize: 14,
+        textAlign:'center',
+        color:'red'
+    },
     button: {
         backgroundColor: "#FF66CC",
         marginTop: 5,
@@ -110,6 +116,15 @@ const styles = StyleSheet.create({
         elevation: 5,
         flexDirection: 'column',
     },
+    resultBox: {
+        margin: 10,
+        padding: 10,
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 8,
+        backgroundColor: '#f9f9f9',
+        width: '350',
+      },
     
     
 });

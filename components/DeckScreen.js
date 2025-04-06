@@ -5,7 +5,7 @@ import { Button } from 'react-native-paper';
 import { useSQLiteContext } from 'expo-sqlite';
 import styles from './styles';
 
-export default function DeckPage({ route }) {
+export default function DeckScreen({ route }) {
     const { deck } = route.params; // Vastaanota deck tiedot
     const db = useSQLiteContext();
     const [cards, setCards] = useState([]);
