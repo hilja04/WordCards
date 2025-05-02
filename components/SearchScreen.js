@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Text, TextInput, View, Button } from "react-native";
+import { Text, TextInput, View } from "react-native";
+import { Button } from "react-native-paper";
 import styles from "./styles";
 
 export default function SearchScreen() {
@@ -15,7 +16,7 @@ export default function SearchScreen() {
       setResult({}); // Clear previous results
       return;
     }
-
+    //Fetching free dictionary  api
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${search}`)
       .then((response) => response.json())
       .then(data => {
@@ -24,7 +25,7 @@ export default function SearchScreen() {
           setErrorMessage("Word not found");
           setResult({}); // Clear previous results
         } else {
-          // Get the first definition of the first meaning
+          // Getting the first definition of the first meaning
           const firstDefinition = data[0].meanings[0].definitions[0].definition;
           
           // Setting the searched word and the definition
@@ -42,13 +43,15 @@ export default function SearchScreen() {
 
   return (
     <View style={[styles.container, { flex: 1, justifyContent: 'flex-start' }]}>
+      <Text style={styles.text}>Write a word to get its definition</Text>
       <TextInput
         style={styles.input}
         placeholder="Search"
         value={search}
         onChangeText={(text) => setSearch(text)}
       />
-      <Button title="Find" onPress={handleFetch} />
+      
+      <Button style={styles.button} mode="contained" onPress={handleFetch}>Find</Button>
       
       {/* Show the error message if the word is not found */}
       {errorMessage ? (

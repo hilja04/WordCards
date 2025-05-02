@@ -13,22 +13,28 @@ const Tab = createBottomTabNavigator();
 // Stack navigation for Decks tab
 function HomeStackNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {backgroundColor: '#26002B'},
+        headerTintColor: '#fff',
+        headerTitleStyle: {fontWeight: 'bold'},
+      }}
+    >
       <Stack.Screen name="DecksList" component={HomeScreen} options={{ title: 'Decks' }} />
-      <Stack.Screen 
-        name="DeckDetails" 
-        component={DeckScreen} 
-        options={({ route }) => ({ title: route.params.deck.title })} 
+      <Stack.Screen
+        name="DeckDetails"
+        component={DeckScreen}
+        options={({ route }) => ({ title: route.params.deck.title })}
       />
     </Stack.Navigator>
+
   );
 }
 
-// Bottom tab navigation with Home stack and Search screen
+// Bottom tab navigation 
 function TabNavigator() {
   return (
     <Tab.Navigator
-      // Tab icons
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -41,16 +47,30 @@ function TabNavigator() {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: '#D81B60',
+        tabBarInactiveTintColor: '#888',
+        tabBarStyle: {backgroundColor: '#26002B',borderColor: 'black'},
       })}
     >
-      {/* Tab Screens */}
-      <Tab.Screen name="Decks" component={HomeStackNavigator} options={{ headerShown: false }} />
-      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen
+        name="Decks"
+        component={HomeStackNavigator}
+        options={{ headerShown: false }} 
+      />
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          headerShown: true, 
+          headerStyle: { backgroundColor: '#26002B' },
+          headerTintColor: '#fff',
+          headerTitleStyle: { fontWeight: 'bold' },
+        }}
+      />
     </Tab.Navigator>
   );
 }
+
 
 // Initializer for the database
 const initializeDatabase = async (db) => {

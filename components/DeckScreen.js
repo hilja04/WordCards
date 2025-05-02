@@ -4,14 +4,18 @@ import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Modal } 
 import { Button } from 'react-native-paper';
 import { useSQLiteContext } from 'expo-sqlite';
 import styles from './styles';
+import { Alert } from 'react-native';
+import CardGame from './CardGame';
 
+//DeckScreen component to show one deck and its content
 export default function DeckScreen({ route }) {
-    const { deck } = route.params; // Vastaanota deck tiedot
+    const { deck } = route.params;
     const db = useSQLiteContext();
     const [cards, setCards] = useState([]);
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [showGame, setShowGame] = useState(false);
 
     useEffect(() => {
         fetchCards();
@@ -26,10 +30,11 @@ export default function DeckScreen({ route }) {
         }
     };
 
+    //Add card to the deck
     const addCard = async () => {
         try {
             await db.runAsync('INSERT INTO card (deck_id, question, answer) VALUES (?, ?, ?)', deck.id, question, answer);
-            setQuestion('');
+            setQuestion(''); //Clearing the states
             setAnswer('');
             setShowModal(false);
             fetchCards();
@@ -38,14 +43,29 @@ export default function DeckScreen({ route }) {
         }
     };
 
-    const deleteItem = async (id) => {
-        try {
-            await db.runAsync('DELETE FROM card WHERE id=?', id); 
-            await fetchCards();
-        } catch (error) {
-            console.error('Could not delete item', error);
-        }
+    //Delete for the cards
+    const deleteCard = async (id) => {
+        Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete this card?", //Confirmation
+            [
+                { text: "Cancel" },
+                {
+                    text: "Delete",
+                    onPress: async () => {
+                        try {
+                            await db.runAsync('DELETE FROM card WHERE id=?', id);
+                            await fetchCards();
+                        } catch (error) {
+                            console.error('Could not delete item', error);
+                        }
+                    },
+                },
+            ]
+        );
     };
+
+    //Function to turn the card
     const toggleCard = (index) => {
         const updatedCards = [...cards];
         updatedCards[index].showAnswer = !updatedCards[index].showAnswer;
@@ -56,9 +76,15 @@ export default function DeckScreen({ route }) {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>{deck.description}</Text>
-            <Button mode="contained" style={styles.button} onPress={() => setShowModal(true)}>
-                Add Card
-            </Button>
+            <View style={styles.buttonContainer}>
+                <Button mode="contained" style={styles.button} onPress={() => setShowModal(true)}>
+                    Add Card
+                </Button>
+                <Button mode="contained" style={styles.gameButton} onPress={() => setShowGame(true)}>
+                    Start Game
+                </Button>
+            </View>
+            {/* Modal for creating a card*/}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -84,7 +110,7 @@ export default function DeckScreen({ route }) {
                             Save Card
                         </Button>
                         <Button
-                            mode="outlined"
+                            mode="contained"
                             style={styles.cancelButton}
                             onPress={() => setShowModal(false)}
                         >
@@ -102,12 +128,21 @@ export default function DeckScreen({ route }) {
                         <Text style={styles.cardQuestion}>
                             {item.showAnswer ? item.answer : item.question}
                         </Text>
-                        <Text style={{ color: '#ff0000' }} onPress={() => deleteItem(item.id)}>
-                            Done
+                        <Text style={{ color: '#ff0000', marginTop: 10 }} onPress={() => deleteCard(item.id)}>
+                            Delete
                         </Text>
                     </TouchableOpacity>
                 )}
             />
+            {/* Renders CardGame if deck has cards */}
+            {cards.length > 0 && (
+                <CardGame
+                    showGame={showGame}
+                    onClose={() => setShowGame(false)}
+                    cards={cards}
+                />
+            )}
+
         </View>
     );
 }
