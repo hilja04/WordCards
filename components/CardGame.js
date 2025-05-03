@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
 import styles from './styles';
+import * as Speech from 'expo-speech';
 
 export default function CardGame({ showGame, onClose, cards }) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -19,6 +20,19 @@ export default function CardGame({ showGame, onClose, cards }) {
             setGameFinished(false);
         }
     }, [showGame, cards]);
+    
+    //Function for text to speech
+    const speakWords = () => {
+    const textToSpeak = showAnswer 
+        ? gameCards[currentIndex].answer 
+        : gameCards[currentIndex].question;
+    
+    Speech.speak(textToSpeak, {
+        language: 'en',
+        pitch: 1.0,
+        rate: 1.0,
+    });
+    };
 
     const toggleCard = () => setShowAnswer(!showAnswer);
 
@@ -78,9 +92,16 @@ export default function CardGame({ showGame, onClose, cards }) {
                             <TouchableOpacity onPress={toggleCard} style={styles.card}>
                                 <Text style={styles.cardQuestion}>
                                     {showAnswer
-                                        ? `A: ${gameCards[currentIndex].answer}`
-                                        : `Q: ${gameCards[currentIndex].question}`}
+                                        ? ` ${gameCards[currentIndex].answer}`
+                                        : ` ${gameCards[currentIndex].question}`}
                                 </Text>
+                                <IconButton 
+                                    icon="volume-high" 
+                                    size={30} 
+                                    onPress={speakWords} 
+                                    style={{ position: 'absolute', bottom: 10, right: 10 }}
+                                />
+
                             </TouchableOpacity>
 
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>

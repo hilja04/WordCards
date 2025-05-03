@@ -106,16 +106,14 @@ export default function DeckScreen({ route }) {
                             value={answer}
                             onChangeText={setAnswer}
                         />
-                        <Button mode="contained" style={styles.button} onPress={addCard}>
-                            Save Card
-                        </Button>
-                        <Button
-                            mode="contained"
-                            style={styles.cancelButton}
-                            onPress={() => setShowModal(false)}
-                        >
-                            Cancel
-                        </Button>
+                        <View>
+                            <Button mode="contained" style={styles.button} onPress={addCard}>
+                                Save Card
+                            </Button>
+                            <Button mode="contained" style={styles.cancelButton} onPress={() => setShowModal(false)}>
+                                Cancel
+                            </Button>
+                        </View>
                     </View>
                 </View>
             </Modal>
