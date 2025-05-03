@@ -120,12 +120,11 @@ export default function HomeScreen({ navigation }) {
                     <TouchableOpacity style={styles.deck} onPress={() => navigation.navigate('DeckDetails', { deck: item })}>
                         <Text style={styles.deckTitle} numberOfLines={1}>{item.title}</Text>
                         <Text style={styles.deckDescription} numberOfLines={3}>{item.description}</Text>
-                        <View style={{ alignSelf: 'flex-start' }}>
+                        <View style={{ alignSelf: 'flex-start',position:'absolute',left:10, bottom:15 }}>
                             <Text style={{ color: '#ff0000' }} onPress={() => deleteDeck(item.id)}>
                                 Delete
                             </Text>
-                        </View>
-
+                        </View>    
                     </TouchableOpacity>
                 )}
             />

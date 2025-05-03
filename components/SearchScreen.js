@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Text, TextInput, View, FlatList } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, IconButton} from "react-native-paper";
 import styles from "./styles";
+import * as Clipboard from 'expo-clipboard';
+
 
 export default function SearchScreen() {
   const [search, setSearch] = useState('');
@@ -42,6 +44,10 @@ export default function SearchScreen() {
         setResult([]);
       });
   };
+  const copyToClipboard = (text) => {
+    Clipboard.setStringAsync(text);
+};
+
 
   return (
     <View style={[styles.container, { flex: 1, justifyContent: 'flex-start' }]}>
@@ -64,9 +70,18 @@ export default function SearchScreen() {
           renderItem={({ item }) => (
             <View style={styles.resultBox}>
               <Text style={styles.text}>{item.partOfSpeech}: {item.definition}</Text>
+              <IconButton 
+                icon="content-copy" 
+                size={20} 
+                style={{ position: 'absolute', bottom: 5, right: 5 }} 
+                onPress={() => copyToClipboard(item.definition)}
+              />
+
+
             </View>
           )}
         />
+
       )}
     </View>
   );
