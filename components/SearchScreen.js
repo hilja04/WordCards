@@ -1,70 +1,72 @@
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, View, FlatList } from "react-native";
 import { Button } from "react-native-paper";
 import styles from "./styles";
 
 export default function SearchScreen() {
   const [search, setSearch] = useState('');
-  const [result, setResult] = useState({}); 
+  const [result, setResult] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleFetch = () => {
-
     if (!search.trim()) {
-      // If search is empty, show a message asking to enter a word
-      setErrorMessage("Please write a word to the Search input");
-      setResult({}); // Clear previous results
+      setErrorMessage("Please enter a word to get its definition.");
+      setResult([]);
       return;
     }
-    //Fetching free dictionary  api
+
+    // Fetch translations using the dictionary API
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${search}`)
-      .then((response) => response.json())
+      .then(response => response.json())
       .then(data => {
-        // Check if the response contains a valid result
         if (data.title === "No Definitions Found") {
-          setErrorMessage("Word not found");
-          setResult({}); // Clear previous results
+          setErrorMessage("Word not found.");
+          setResult([]);
         } else {
-          // Getting the first definition of the first meaning
-          const firstDefinition = data[0].meanings[0].definitions[0].definition;
-          
-          // Setting the searched word and the definition
-          setResult({ word: search, definition: firstDefinition });
-          setErrorMessage(''); 
+          // Extract multiple definitions instead of just the first one
+          const definitions = data[0].meanings.flatMap(meaning =>
+            meaning.definitions.map(def => ({
+              partOfSpeech: meaning.partOfSpeech,
+              definition: def.definition
+            }))
+          );
+
+          setResult(definitions);
+          setErrorMessage('');
         }
-        setSearch(''); // Clear the input after fetching
+        setSearch('');
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
-        setErrorMessage("Error fetching data");
-        setResult({}); // Clear previous results
+        setErrorMessage("Error fetching data.");
+        setResult([]);
       });
   };
 
   return (
     <View style={[styles.container, { flex: 1, justifyContent: 'flex-start' }]}>
-      <Text style={styles.text}>Write a word to get its definition</Text>
+      <Text style={styles.text}>Enter a word to get definitions</Text>
       <TextInput
         style={styles.input}
-        placeholder="Search"
+        placeholder="Type a word"
         value={search}
         onChangeText={(text) => setSearch(text)}
       />
-      
-      <Button style={styles.button} mode="contained" onPress={handleFetch}>Find</Button>
-      
-      {/* Show the error message if the word is not found */}
+
+      <Button style={styles.button} mode="contained" onPress={handleFetch}>Find Definitions</Button>
+
       {errorMessage ? (
         <Text style={styles.errorText}>{errorMessage}</Text>
       ) : (
-        // Check if result has data before rendering
-        result.word && result.definition && (
-          <View style={styles.resultBox}>
-            <Text style={styles.text}>
-              {result.word} = {result.definition} {/* Display the word and its definition */}
-            </Text>
-          </View>
-        )
+        <FlatList
+          data={result}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.resultBox}>
+              <Text style={styles.text}>{item.partOfSpeech}: {item.definition}</Text>
+            </View>
+          )}
+        />
       )}
     </View>
   );

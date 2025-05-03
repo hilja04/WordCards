@@ -87,7 +87,7 @@ export default function CardGame({ showGame, onClose, cards }) {
                     {!gameFinished ? (
                         <>
                             <Text style={styles.text2}>
-                                Press Wrong {'\u274C'} if your answer is incorrect or Right {'\u2705'} if your answer is correct
+                                Press the card to turn it around!
                             </Text>
                             <TouchableOpacity onPress={toggleCard} style={styles.card}>
                                 <Text style={styles.cardQuestion}>
@@ -103,7 +103,11 @@ export default function CardGame({ showGame, onClose, cards }) {
                                 />
 
                             </TouchableOpacity>
-
+                            {currentIndex === 0 && (
+                                <Text style={styles.text3}>
+                                    Press "Wrong" if your answer is incorrect or "Right" if your answer is correct
+                                </Text>
+                            )}
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
                                 <Button mode="contained" style={{ width: 120, margin: 2 }} onPress={markIncorrect}>
                                     Wrong {'\u274C'}
@@ -115,12 +119,12 @@ export default function CardGame({ showGame, onClose, cards }) {
                         </>
                     ) : (
                         <View style={{ alignItems: 'center' }}>
-                            <Text style={styles.resultText}>Game Over!</Text>
-                            <Text style={styles.resultText}>Correct Answers: {score.correct}</Text>
-                            <Text style={styles.resultText}>Incorrect Answers: {score.incorrect}</Text>
                             {/* Shows retry button only if user got incorrect cards */}
                             {score.incorrect > 0 ? (
                                 <>
+                                     <Text style={styles.resultText}>Game Over!</Text>
+                                    <Text style={styles.resultText}>Correct Answers: {score.correct}</Text>
+                                    <Text style={styles.resultText}>Incorrect Answers: {score.incorrect}</Text>
                                     <Text style={styles.textBlack}>
                                         You got some answers wrong! Press "Retry" to try again with the cards you missed in the first round.
                                     </Text>
@@ -129,9 +133,12 @@ export default function CardGame({ showGame, onClose, cards }) {
                                     </Button>
                                 </>
                             ) : (
-                                <Text style={styles.textBlack}>
-                                    Congratulations! You got all the answers right! {'\uD83C\uDF89'}{'\u2728'}
-                                </Text>
+                                <>
+                                    <Text style={styles.resultText}>Game Over!</Text>
+                                    <Text style={styles.textBlack}>
+                                        Congratulations! You got all the answers right! {'\uD83C\uDF89'}{'\u2728'}
+                                    </Text>
+                                </>
                             )}
 
 

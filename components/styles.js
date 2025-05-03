@@ -30,6 +30,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#FFF',
     },
+    text3: {
+        fontSize: 10,
+        textAlign: 'center',
+        color: '#FFF',
+    },
     textBlack: {
         margin: 10,
         fontSize: 12,
