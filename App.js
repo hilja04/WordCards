@@ -7,24 +7,25 @@ import HomeScreen from './components/HomeScreen';
 import DeckScreen from './components/DeckScreen';
 import SearchScreen from './components/SearchScreen';
 
+//Initializing navigators
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Stack navigation for Decks tab
+// Stack navigation for Decks 
 function HomeStackNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {backgroundColor: '#26002B'},
+        headerStyle: { backgroundColor: '#26002B' },
         headerTintColor: '#fff',
-        headerTitleStyle: {fontWeight: 'bold'},
+        headerTitleStyle: { fontWeight: 'bold' },
       }}
     >
       <Stack.Screen name="DecksList" component={HomeScreen} options={{ title: 'Decks' }} />
       <Stack.Screen
         name="DeckDetails"
         component={DeckScreen}
-        options={({ route }) => ({ title: route.params.deck.title })}
+        options={({ route }) => ({ title: route.params.deck.title })} //sets the title to the deck's name
       />
     </Stack.Navigator>
 
@@ -49,19 +50,19 @@ function TabNavigator() {
         },
         tabBarActiveTintColor: '#D81B60',
         tabBarInactiveTintColor: '#888',
-        tabBarStyle: {backgroundColor: '#26002B',borderColor: 'black'},
+        tabBarStyle: { backgroundColor: '#26002B', borderColor: 'black' },
       })}
     >
       <Tab.Screen
         name="Decks"
         component={HomeStackNavigator}
-        options={{ headerShown: false }} 
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Search"
         component={SearchScreen}
         options={{
-          headerShown: true, 
+          headerShown: true,
           headerStyle: { backgroundColor: '#26002B' },
           headerTintColor: '#fff',
           headerTitleStyle: { fontWeight: 'bold' },
@@ -84,7 +85,7 @@ const initializeDatabase = async (db) => {
       );
     `);
 
-    // Create Card table linked to Deck
+    // Create Card table 
     await db.execAsync(`
       CREATE TABLE IF NOT EXISTS card (
         id INTEGER PRIMARY KEY NOT NULL,

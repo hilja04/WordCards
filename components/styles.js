@@ -68,15 +68,12 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: "black",
-
     },
     buttonContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 10,
-
     },
-
     deck: {
         backgroundColor: '#D7A9F0',
         padding: 15,
@@ -130,7 +127,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#5D3C6B',
     },
-
     modalBackground: {
         flex: 1,
         justifyContent: 'center',

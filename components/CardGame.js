@@ -4,6 +4,7 @@ import { Button, IconButton } from 'react-native-paper';
 import styles from './styles';
 import * as Speech from 'expo-speech';
 
+// CardGame component to play cards
 export default function CardGame({ showGame, onClose, cards }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
@@ -20,28 +21,28 @@ export default function CardGame({ showGame, onClose, cards }) {
             setGameFinished(false);
         }
     }, [showGame, cards]);
-    
-    //Function for text to speech
+
+    // Function for text to speech
     const speakWords = () => {
-    const textToSpeak = showAnswer 
-        ? gameCards[currentIndex].answer 
-        : gameCards[currentIndex].question;
-    
-    Speech.speak(textToSpeak, {
-        language: 'en',
-        pitch: 1.0,
-        rate: 1.0,
-    });
+        const textToSpeak = showAnswer
+            ? gameCards[currentIndex].answer
+            : gameCards[currentIndex].question;
+
+        Speech.speak(textToSpeak, {
+            language: 'en',
+            pitch: 1.0,
+            rate: 1.0,
+        });
     };
 
     const toggleCard = () => setShowAnswer(!showAnswer);
 
-    //Marks answer correct and goes to next card
+    // Marks answer correct and goes to next card
     const markCorrect = () => {
         setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
         nextCard();
     };
-    //Marks answer incorrect, stores the index of the incorrect card and goes to next one
+    // Marks answer incorrect, stores the index of the incorrect card and goes to next one
     const markIncorrect = () => {
         setScore(prev => ({
             ...prev,
@@ -60,7 +61,7 @@ export default function CardGame({ showGame, onClose, cards }) {
         }
     };
 
-    //Function to restart the game with the cards the user got wrong
+    // Function to restart the game with the cards the user got wrong
     const restartWithIncorrectCards = () => {
         const incorrectOnly = score.incorrectCards.map(index => gameCards[index]);
 
@@ -93,16 +94,19 @@ export default function CardGame({ showGame, onClose, cards }) {
                                 <Text style={styles.cardQuestion}>
                                     {showAnswer
                                         ? ` ${gameCards[currentIndex].answer}`
-                                        : ` ${gameCards[currentIndex].question}`}
+                                        : ` ${gameCards[currentIndex].question}`
+                                    }
                                 </Text>
-                                <IconButton 
-                                    icon="volume-high" 
-                                    size={30} 
-                                    onPress={speakWords} 
+                                {/* Shows the text-to-speech button */}
+                                <IconButton
+                                    icon="volume-high"
+                                    size={30}
+                                    onPress={speakWords}
                                     style={{ position: 'absolute', bottom: 10, right: 10 }}
                                 />
 
                             </TouchableOpacity>
+                            {/* Shows instructions only on first card */}
                             {currentIndex === 0 && (
                                 <Text style={styles.text3}>
                                     Press "Wrong" if your answer is incorrect or "Right" if your answer is correct
@@ -122,7 +126,7 @@ export default function CardGame({ showGame, onClose, cards }) {
                             {/* Shows retry button only if user got incorrect cards */}
                             {score.incorrect > 0 ? (
                                 <>
-                                     <Text style={styles.resultText}>Game Over!</Text>
+                                    <Text style={styles.resultText}>Game Over!</Text>
                                     <Text style={styles.resultText}>Correct Answers: {score.correct}</Text>
                                     <Text style={styles.resultText}>Incorrect Answers: {score.incorrect}</Text>
                                     <Text style={styles.textBlack}>
@@ -140,8 +144,6 @@ export default function CardGame({ showGame, onClose, cards }) {
                                     </Text>
                                 </>
                             )}
-
-
                             <Button style={styles.cancelButton} mode="contained" onPress={onClose}>
                                 Exit Game
                             </Button>
